@@ -3,6 +3,14 @@ import { State, Action, Video, _s_return } from "../types";
 import { _write_to_playlist } from "./_write_to_playlist";
 import { _write_to_user } from "./_write_to_user";
 declare const ContractError: new (arg0: string) => any;
+/**
+ *
+ *
+ * @export
+ * @param {State} state
+ * @param {Action} action
+ * @return {*}  {_s_return}
+ */
 export function upload_video(state: State, action: Action): _s_return {
     if (action.input.id.length && action.input.title && action.input.description && action.input.tags.length && action.input.access_model.length) {
         //@ts-ignore 
@@ -22,7 +30,7 @@ export function upload_video(state: State, action: Action): _s_return {
                     thumbnails: action.input.thumbnails.length ? action.input.thumbnails : "",
                     access_model: null,
                     payment_address: null,
-                    price: null,
+                    price_winston: null,
                     playlist: null
                 })
                 state = _write_to_playlist(state, action)
@@ -43,7 +51,7 @@ export function upload_video(state: State, action: Action): _s_return {
                     thumbnails: action.input.thumbnails.length ? action.input.thumbnails : "",
                     access_model: "open",
                     payment_address: null,
-                    price: null,
+                    price_winston: null,
                     playlist: null
                 })
                 state = _write_to_user(state, "video", action.input.id)
@@ -61,7 +69,7 @@ export function upload_video(state: State, action: Action): _s_return {
                     thumbnails: action.input.thumbnails.length ? action.input.thumbnails : "",
                     access_model: "open",
                     payment_address: user_id,
-                    price: action.input.price,
+                    price_winston: action.input.price_winston,
                     playlist: null
                 })
                 state = _write_to_user(state, "video", action.input.id)

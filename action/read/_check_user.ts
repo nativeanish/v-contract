@@ -1,5 +1,12 @@
 import { State } from "../types";
 
+/**
+ *
+ *
+ * @export
+ * @param {State} state
+ * @return {*}  {boolean}
+ */
 export function _check_user(state: State): boolean {
     //@ts-ignore 
     const user_id: string = SmartWeave.transaction.owner

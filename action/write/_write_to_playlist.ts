@@ -1,6 +1,14 @@
 import { Action, State } from "../types";
 import { _write_to_user } from "./_write_to_user";
 
+/**
+ *
+ *
+ * @export
+ * @param {State} state
+ * @param {Action} action
+ * @return {*}  {State}
+ */
 export function _write_to_playlist(state: State, action: Action): State {
     //@ts-ignore 
     const user_id: string = SmartWeave.transaction.owner;

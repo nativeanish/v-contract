@@ -1,5 +1,13 @@
 import { Action, State, _q_return } from "../types";
 
+/**
+ *
+ *
+ * @export
+ * @param {State} state
+ * @param {Action} action
+ * @return {*}  {_q_return}
+ */
 export function get_playlist(state: State, action: Action): _q_return {
     const playlist = state.playlist.filter((e) => e.id === action.input.id)
     if (playlist.length) {

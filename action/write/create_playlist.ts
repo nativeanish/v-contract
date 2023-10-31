@@ -1,6 +1,14 @@
 import { Action, State, _s_return } from "../types";
 import { _write_to_user } from "./_write_to_user";
 declare const ContractError: new (arg0: string) => any;
+/**
+ *
+ *
+ * @export
+ * @param {State} state
+ * @param {Action} action
+ * @return {*}  {_s_return}
+ */
 export function create_playlist(state: State, action: Action): _s_return {
     if (action.input.id.length && action.input.description.length && action.input.tags.length && action.input.access_model.length) {
         //@ts-ignore 
@@ -17,10 +25,12 @@ export function create_playlist(state: State, action: Action): _s_return {
                 teaser: action.input.teaser.length ? action.input.teaser : "",
                 //@ts-ignore 
                 timestamp: String(SmartWeave.block.timestamp),
-                creator: String(user)
+                creator: String(user),
+                price_winston: null,
+                payment_address: null
             })
         } else if (action.input.access_model === "exclusive") {
-            if (action.input.price.length) {
+            if (action.input.price_winston.length) {
                 state.playlist.push({
                     id: action.input.id,
                     title: action.input.title,
@@ -34,7 +44,7 @@ export function create_playlist(state: State, action: Action): _s_return {
                     timestamp: String(SmartWeave.block.timestamp),
                     //@ts-ignore
                     payment_address: String(SmartWeave.transaction.owner),
-                    price: action.input.price,
+                    price_winston: action.input.price_winston,
                     creator: String(user)
                 })
             } else {

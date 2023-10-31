@@ -4,6 +4,19 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "@types/node": "^20.8.10",
+    "copyfiles": "^2.4.1",
+    "esbuild": "^0.19.5",
+    "replace-in-file": "^7.0.2",
+    "rimraf": "^5.0.5",
+    "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
+  },
+  "scripts": {
+    "build:contracts": "yarn run clean && yarn run build-ts && npm run cp",
+    "build-ts": "npx ts-node build.ts",
+    "clean": "npx rimraf ./dist",
+    "cp": "npx copyfiles init.json dist",
+    "build": "yarn run build:contracts"
   }
 }
