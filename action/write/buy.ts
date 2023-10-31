@@ -1,6 +1,6 @@
-import { Action, State, _return } from "../types";
+import { Action, State, _s_return } from "../types";
 declare const ContractError: new (arg0: string) => any;
-export function buy(state: State, action: Action): _return {
+export function buy(state: State, action: Action): _s_return {
     //@ts-ignore
     const owner = SmartWeave.transaction.target
     //@ts-ignore 
@@ -14,7 +14,7 @@ export function buy(state: State, action: Action): _return {
                 state.bought.push({ type: "video", id: action.input.id, user: String(user) })
                 return { state: state }
             } else {
-                throw new ContractError("Not enough amount send or sent person was not right")
+                throw new ContractError("Not enough amount send or sent to wrong wallet")
             }
         } else {
             throw new ContractError("You don't need to buy this content. It is Free/Open Access")
@@ -27,7 +27,7 @@ export function buy(state: State, action: Action): _return {
                 state.bought.push({ type: "playlist", id: action.input.id, user: String(user) })
                 return { state: state }
             } else {
-                throw new ContractError("Not enough amount send or sent person was not right")
+                throw new ContractError("Not enough amount send or sent to wrong wallet")
             }
         } else {
             throw new ContractError("You don't need to buy this content. It is Free/Open Access")

@@ -1,7 +1,7 @@
-import { Action, State, _return } from "../types";
+import { Action, State, _s_return } from "../types";
 import { _write_to_user } from "./_write_to_user";
 declare const ContractError: new (arg0: string) => any;
-export function create_playlist(state: State, action: Action): _return {
+export function create_playlist(state: State, action: Action): _s_return {
     if (action.input.id.length && action.input.description.length && action.input.tags.length && action.input.access_model.length) {
         //@ts-ignore 
         const user: string = SmartWeave.transaction.owner

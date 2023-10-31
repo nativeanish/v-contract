@@ -40,7 +40,7 @@ export interface State {
     user: Array<User>
     bought: Array<{ type: "video" | "playlist", id: string, user: string }>
 }
-type call = "upload_video" | "create_playlist" | "view" | "get_playlist" | "get_video"
+type call = "upload_video" | "create_playlist" | "view" | "get_playlist" | "get_video" | "buy"
 export interface Action {
     input: {
         function: call
@@ -57,4 +57,6 @@ export interface Action {
 
     }
 }
-export type _return = { state: State }
+export type _s_return = { state: State }
+export type _q_return = { result: { success: boolean; data: Video | Playlist | string } }
+export type _return = _s_return | _q_return

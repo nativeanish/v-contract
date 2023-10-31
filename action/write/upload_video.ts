@@ -1,9 +1,9 @@
 import { _check_playlist_auth } from "../read/_check_playlist_auth";
-import { State, Action, Video, _return } from "../types";
+import { State, Action, Video, _s_return } from "../types";
 import { _write_to_playlist } from "./_write_to_playlist";
 import { _write_to_user } from "./_write_to_user";
 declare const ContractError: new (arg0: string) => any;
-export function upload_video(action: Action, state: State): _return {
+export function upload_video(state: State, action: Action): _s_return {
     if (action.input.id.length && action.input.title && action.input.description && action.input.tags.length && action.input.access_model.length) {
         //@ts-ignore 
         const user_id: string = SmartWeave.transaction.owner
