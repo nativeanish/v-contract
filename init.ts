@@ -28,6 +28,6 @@ export function handle(state: State, action: Action): _return {
         case "get_encryption_key":
             return get_encryption_key(state, action)
         default:
-            throw new ContractError("Undefined Method Called")
+            throw new ContractError(`Undefined Method Called`)
     }
 }

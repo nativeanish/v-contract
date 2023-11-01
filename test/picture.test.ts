@@ -40,9 +40,7 @@ describe("Testing the picture.studio contract", () => {
         console.log("Deployed Contract Address: ", contract_id)
         contract = warp.contract<State>(contract_id).connect(wallet)
     })
-    it("testing", async () => {
-        const txn = await contract.writeInteraction({ function: "upload_video", title: "A good Cars", description: "marcs", tags: ["marcs", "works"], access_model: "open" })
-        console.log(await ((await contract.readState())))
-        expect(32).toEqual(32)
+    it("testing undefined method called", async () => {
+        await expect(contract.writeInteraction({ function: "unknown method", title: "A good Cars", description: "marcs", tags: ["marcs", "works"], access_model: "open" }, { strict: true })).rejects.toThrow("Cannot create interaction: Undefined Method Called")
     })
 })
