@@ -37,7 +37,8 @@ export function upload_video(state: State, action: Action): _s_return {
             } else {
                 throw new ContractError("Playlist doesn't exits")
             }
-        } else {
+        }
+        if (action.input.access_model?.length) {
             if (action.input.access_model === "open") {
                 state.video.push({
                     title: action.input.title,
@@ -56,25 +57,31 @@ export function upload_video(state: State, action: Action): _s_return {
                 })
                 state = _write_to_user(state, "video", action.input.id)
             } else if (action.input.access_model === "exclusive") {
-                state.video.push({
-                    title: action.input.title,
-                    id: action.input.id,
-                    description: action.input.description,
-                    tags: action.input.tags,
-                    //@ts-ignore 
-                    timestamp: String(SmartWeave.block.timestamp),
-                    creator: user_id,
-                    views: 0,
-                    thumbnails: action.input.thumbnails?.length ? action.input.thumbnails : "",
-                    access_model: "open",
-                    payment_address: user_id,
-                    price_winston: action.input.price_winston,
-                    playlist: null
-                })
-                state = _write_to_user(state, "video", action.input.id)
+                if (action.input.price_winston?.length) {
+                    state.video.push({
+                        title: action.input.title,
+                        id: action.input.id,
+                        description: action.input.description,
+                        tags: action.input.tags,
+                        //@ts-ignore 
+                        timestamp: String(SmartWeave.block.timestamp),
+                        creator: user_id,
+                        views: 0,
+                        thumbnails: action.input.thumbnails?.length ? action.input.thumbnails : "",
+                        access_model: "exclusive",
+                        payment_address: user_id,
+                        price_winston: action.input.price_winston,
+                        playlist: null
+                    })
+                    state = _write_to_user(state, "video", action.input.id)
+                } else {
+                    throw new ContractError("In Exclusive Model, you need to set a price")
+                }
             } else {
-                throw new ContractError("Access Model is not Defined")
+                throw new ContractError("Access Model is wrong")
             }
+        } else {
+            throw new ContractError("Access Model is not Defined")
         }
         return { state: state }
     } else {

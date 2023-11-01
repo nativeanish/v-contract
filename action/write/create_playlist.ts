@@ -36,7 +36,7 @@ export function create_playlist(state: State, action: Action): _s_return {
                     title: action.input.title,
                     description: action.input.description,
                     tags: action.input.tags,
-                    access_model: "open",
+                    access_model: "exclusive",
                     thumbnails: action.input.thumbnails?.length ? action.input.thumbnails : "",
                     video_list: [],
                     teaser: action.input.teaser?.length ? action.input.teaser : "",
