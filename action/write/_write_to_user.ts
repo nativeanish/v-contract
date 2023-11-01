@@ -13,7 +13,7 @@ export function _write_to_user(state: State, type: "video" | "playlist", id: str
     //@ts-ignore 
     const user_id: string = SmartWeave.transaction.owner
     const user = state.user.find((e) => e.id === user_id)
-    if (user?.id.length) {
+    if (user?.id?.length) {
         if (type === "video") {
             user.video.push(id)
         }

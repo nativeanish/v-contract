@@ -14,7 +14,7 @@ export function _write_to_playlist(state: State, action: Action): State {
     const user_id: string = SmartWeave.transaction.owner;
     state = _write_to_user(state, "video", action.input.id)
     const playlist = state.playlist.find((e) => e.id === action.input.playlist)
-    if (playlist?.id.length) {
+    if (playlist?.id?.length) {
         playlist.video_list.push(action.input.id)
     }
     return state
