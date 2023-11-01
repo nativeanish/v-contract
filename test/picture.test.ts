@@ -41,8 +41,8 @@ describe("Testing the picture.studio contract", () => {
         contract = warp.contract<State>(contract_id).connect(wallet)
     })
     it("testing", async () => {
-        const txn = await contract.writeInteraction({ function: "upload_video", id: "anish4r34ff3", title: "A good Cars", description: "marcs", tags: ["marcs", "works"], access_model: "open" })
-        console.log(await ((await contract.readState()).cachedValue.state.video))
+        const txn = await contract.writeInteraction({ function: "upload_video", title: "A good Cars", description: "marcs", tags: ["marcs", "works"], access_model: "open" })
+        console.log(await ((await contract.readState())))
         expect(32).toEqual(32)
     })
 })

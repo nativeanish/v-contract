@@ -1,5 +1,6 @@
 import { Action, State, _s_return } from "../types";
-declare const ContractError: any;
+//@ts-ignore
+declare const ContractError;
 /**
  *
  *

@@ -1,6 +1,7 @@
 import { Action, State, _s_return } from "../types";
 import { _write_to_user } from "./_write_to_user";
-declare const ContractError: any;
+//@ts-ignore
+declare const ContractError;
 /**
  *
  *

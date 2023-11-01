@@ -2,7 +2,8 @@ import { _check_playlist_auth } from "../read/_check_playlist_auth";
 import { State, Action, _s_return } from "../types";
 import { _write_to_playlist } from "./_write_to_playlist";
 import { _write_to_user } from "./_write_to_user";
-declare const ContractError: any;
+//@ts-ignore
+declare const ContractError;
 /**
  *
  *
