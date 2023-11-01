@@ -46,4 +46,20 @@ describe("Testing the picture.studio contract", () => {
     it("testing upload_video method with one undefined basic fields", async () => {
         await expect(contract.writeInteraction({ function: "upload_video", title: "A good Cars", description: "marcs", tags: ["marcs", "works"] }, { strict: true })).rejects.toThrow("Cannot create interaction: \"Some Basics Field is Missing\"")
     })
+    it("testing upload_video method with one undefined playlist", async () => {
+        await expect(contract.writeInteraction({ function: "upload_video", title: "A good Cars", description: "marcs", tags: ["marcs", "works"], id: "fadfsdfsdfsd", playlist: "f8j3jf83f34" }, { strict: true })).rejects.toThrow("Cannot create interaction: \"Playlist doesn't exits\"")
+    })
+    it("testing upload_video method with access model undefined", async () => {
+        await expect(contract.writeInteraction({ function: "upload_video", title: "A good Cars", description: "marcs", tags: ["marcs", "works"], id: "fadfsdfsdfsd" }, { strict: true })).rejects.toThrow("Cannot create interaction: \"Access Model is not Defined\"")
+    })
+    it("testing create_playlist method with one undefined basic fields", async () => {
+        await expect(contract.writeInteraction({ function: "create_playlist", title: "A good Cars", description: "marcs", tags: ["marcs", "works"], access_model: "open" }, { strict: true })).rejects.toThrow("Cannot create interaction: \"Some basic fields are missing\"")
+    })
+    it("testing create_playlist method with error access_model", async () => {
+        await expect(contract.writeInteraction({ function: "create_playlist", title: "A good Cars", description: "marcs", tags: ["marcs", "works"], access_model: "opens", id: "fj83jf98j8j3" }, { strict: true })).rejects.toThrow("Cannot create interaction: \"You must select an access model. Open or Exclusive\"")
+    })
+    it("testing create_playlist method not including price in exclusive access model", async () => {
+        await expect(contract.writeInteraction({ function: "create_playlist", title: "A good Cars", description: "marcs", tags: ["marcs", "works"], access_model: "exclusive", id: "fj83jf98j8j3" }, { strict: true })).rejects.toThrow("Cannot create interaction: \"In Exclusive Playlist, You must set the price\"")
+    })
+
 })

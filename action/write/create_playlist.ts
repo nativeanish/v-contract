@@ -10,7 +10,7 @@ declare const ContractError: new (arg0: string) => any;
  * @return {*}  {_s_return}
  */
 export function create_playlist(state: State, action: Action): _s_return {
-    if (action.input.id?.length && action.input.description?.length && action.input.tags?.length && action.input.access_model?.length) {
+    if (action.input.title?.length && action.input.id?.length && action.input.description?.length && action.input.tags?.length && action.input.access_model?.length) {
         //@ts-ignore 
         const user: string = SmartWeave.transaction.owner
         if (action.input.access_model === "open") {
