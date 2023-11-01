@@ -78,6 +78,6 @@ export function upload_video(state: State, action: Action): _s_return {
         }
         return { state: state }
     } else {
-        throw new ContractError("Something Basics Field is Missing")
+        throw new ContractError("Some Basics Field is Missing")
     }
 }

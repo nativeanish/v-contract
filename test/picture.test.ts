@@ -41,6 +41,9 @@ describe("Testing the picture.studio contract", () => {
         contract = warp.contract<State>(contract_id).connect(wallet)
     })
     it("testing undefined method called", async () => {
-        await expect(contract.writeInteraction({ function: "unknown method", title: "A good Cars", description: "marcs", tags: ["marcs", "works"], access_model: "open" }, { strict: true })).rejects.toThrow("Cannot create interaction: Undefined Method Called")
+        await expect(contract.writeInteraction({ function: "unknown method", title: "A good Cars", description: "marcs", tags: ["marcs", "works"], access_model: "open" }, { strict: true })).rejects.toThrow("Cannot create interaction: \"Undefined Method Called\"")
+    })
+    it("testing upload_video method with one undefined basic fields", async () => {
+        await expect(contract.writeInteraction({ function: "upload_video", title: "A good Cars", description: "marcs", tags: ["marcs", "works"] }, { strict: true })).rejects.toThrow("Cannot create interaction: \"Some Basics Field is Missing\"")
     })
 })
