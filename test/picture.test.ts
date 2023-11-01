@@ -42,7 +42,7 @@ describe("Testing the picture.studio contract", () => {
         wallet_id = _wallet.address
         const _wallet1 = await warp.generateWallet()
         wallet1 = _wallet1.jwk
-        wallet_id1 = wallet_id1
+        wallet_id1 = _wallet1.address
         await warp.testing.addFunds(wallet)
         await warp.testing.addFunds(wallet1)
         initialState = {
@@ -147,16 +147,23 @@ describe("Testing the picture.studio contract", () => {
         await expect(contract.writeInteraction({ function: "buy", id: "fjk453534fj8f3f3", type: "video" }, { strict: true })).rejects.toThrow("Cannot create interaction: \"Video is not present\"")
         await expect(contract.writeInteraction({ function: "buy", id: "fjk453534fj8f3f3", type: "playlist" }, { strict: true })).rejects.toThrow("Cannot create interaction: \"Playlist is not present\"")
     })
+    it("testing buy method", async () => {
+        const contract1 = warp.contract(contract_id).connect(wallet1)
+        await warp.arweave.api.get(`/mint/${wallet_id1}/100000000000000000`)
+        await contract1.writeInteraction({ function: "buy", type: "video", id: id1 }, { strict: true, transfer: { target: wallet_id, winstonQty: price_winston } })
+        let data = (await contract.readState()).cachedValue.state.bought[0]
+        expect(data).toEqual({ type: "video", id: id1, user: wallet_id1 })
+    })
+    it("testing buy method with less money", async () => {
+        const contract1 = warp.contract(contract_id).connect(wallet1)
+        await expect(contract1.writeInteraction({ function: "buy", type: "video", id: id1 }, { strict: true, transfer: { target: wallet_id, winstonQty: String((Number(price_winston) - 5)) } })).rejects.toThrow("Cannot create interaction: \"Not enough amount send or sent to wrong wallet\"")
+    })
     it("testing buy method on open access video", async () => {
         const contract1 = warp.contract(contract_id).connect(wallet1)
         const data = (await contract1.dryWrite({ function: "buy", type: "video", id: id, target: wallet_id, qty: price_winston }, wallet_id))
         expect(data?.errorMessage).toEqual("You don't need to buy this content. It is Free/Open Access")
-    })
-    it("testing buy method", async () => {
-        const contract1 = warp.contract(contract_id).connect(wallet1)
-        await warp.arweave.api.get(`/mint/${wallet_id1}/100000000000000000`)
-        const data = (await contract1.dryWrite({ function: "buy", type: "video", id: id1, target: wallet_id, qty: Number(price_winston) }, wallet_id1))
-        await contr
+        const contrac1 = warp.contract(contract_id).connect(wallet1)
+        await expect(contrac1.writeInteraction({ function: "buy", type: "video", id: id }, { strict: true, transfer: { target: wallet_id, winstonQty: price_winston } })).rejects.toThrow("Cannot create interaction: \"You don't need to buy this content. It is Free/Open Access\"")
     })
     afterAll(async () => {
         await arlocal.stop()
