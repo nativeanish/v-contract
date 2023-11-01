@@ -1,31 +1,26 @@
-export interface Video {
+interface _base {
     id: string;
     title: string;
     description: string;
     thumbnails: string;
     tags: Array<string>;
     access_model: "open" | "exclusive" | null;
-    playlist: string | null;
     payment_address: string | null;
     price_winston: string | null;
     timestamp: string;
     creator: string;
-    views: number
+
+}
+interface Video extends _base {
+    playlist: string | null;
+    views: number;
+    access_model: "open" | "exclusive" | null
 }
 
-interface Playlist {
-    id: string;
-    title: string;
-    description: string;
-    thumbnails: string;
-    tags: Array<string>;
+interface Playlist extends _base {
     teaser: string;
-    access_model: "open" | "exclusive";
-    payment_address: string | null;
-    price_winston: string | null;
     video_list: Array<string>;
-    timestamp: string;
-    creator: string;
+    access_model: "open" | "exclusive"
 }
 
 interface User {

@@ -16,9 +16,9 @@ export function buy(state: State, action: Action): _s_return {
     //@ts-ignore
     const user = SmartWeave.transaction.owner;
     if (action.input.type === "video") {
-        const video = state.video.filter((e) => e.id === action.input.id)
-        if (video.length && video[0].access_model === "exclusive") {
-            if (video[0].creator === String(owner) && Number(qty) >= Number(video[0].price_winston)) {
+        const video = state.video.find((e) => e.id === action.input.id)
+        if (video?.access_model === "exclusive") {
+            if (video.creator === String(owner) && Number(qty) === Number(video.price_winston)) {
                 state.bought.push({ type: "video", id: action.input.id, user: String(user) })
                 return { state: state }
             } else {
@@ -29,9 +29,9 @@ export function buy(state: State, action: Action): _s_return {
         }
     }
     else if (action.input.type === "playlist") {
-        const playlist = state.playlist.filter((e) => e.id === action.input.id)
-        if (playlist.length && playlist[0].access_model === "exclusive") {
-            if (playlist[0].creator === String(owner) && Number(qty) >= Number(playlist[0].price_winston)) {
+        const playlist = state.playlist.find((e) => e.id === action.input.id)
+        if (playlist?.id.length && playlist.access_model === "exclusive") {
+            if (playlist.creator === String(owner) && Number(qty) === Number(playlist.price_winston)) {
                 state.bought.push({ type: "playlist", id: action.input.id, user: String(user) })
                 return { state: state }
             } else {

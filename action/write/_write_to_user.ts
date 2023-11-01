@@ -12,13 +12,13 @@ import { State } from "../types";
 export function _write_to_user(state: State, type: "video" | "playlist", id: string): State {
     //@ts-ignore 
     const user_id: string = SmartWeave.transaction.owner
-    const user = state.user.filter((e) => e.id === user_id)
-    if (user.length) {
+    const user = state.user.find((e) => e.id === user_id)
+    if (user?.id.length) {
         if (type === "video") {
-            user[0].video.push(id)
+            user.video.push(id)
         }
         if (type === "playlist") {
-            user[0].playlist.push(id)
+            user.playlist.push(id)
         }
         return state
     } else {
