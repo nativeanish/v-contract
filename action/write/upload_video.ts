@@ -12,7 +12,7 @@ declare const ContractError: new (arg0: string) => any;
  * @return {*}  {_s_return}
  */
 export function upload_video(state: State, action: Action): _s_return {
-    if (action.input.id.length && action.input.title && action.input.description && action.input.tags.length && action.input.access_model.length) {
+    if (action.input.id.length && action.input.title && action.input.description && action.input.tags.length) {
         //@ts-ignore 
         const user_id: string = SmartWeave.transaction.owner
         if (action.input.playlist.length) {
@@ -55,8 +55,7 @@ export function upload_video(state: State, action: Action): _s_return {
                     playlist: null
                 })
                 state = _write_to_user(state, "video", action.input.id)
-            }
-            if (action.input.access_model === "exclusive") {
+            } else if (action.input.access_model === "exclusive") {
                 state.video.push({
                     title: action.input.title,
                     id: action.input.id,
@@ -73,6 +72,8 @@ export function upload_video(state: State, action: Action): _s_return {
                     playlist: null
                 })
                 state = _write_to_user(state, "video", action.input.id)
+            } else {
+                throw new ContractError("Access Model is not Defined")
             }
         }
         return { state: state }
