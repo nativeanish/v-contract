@@ -36,7 +36,7 @@ export interface State {
     bought: Array<{ type: "video" | "playlist", id: string, user: string }>
     encrypted_db: Array<{ id: string, content_id: string, writer: string }>
 }
-type call = "upload_video" | "create_playlist" | "view" | "get_playlist" | "get_video" | "buy" | "write_encryption_key" | "get_encryption_key"
+type call = "upload_video" | "create_playlist" | "view" | "get_playlist" | "get_video" | "buy" | "write_encryption_key" | "get_encryption_key" | "upload_teaser" | "upload_thumbnail"
 export interface Action {
     input: {
         function: call

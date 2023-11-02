@@ -4,7 +4,7 @@ import ArLocal from "arlocal"
 import fs from "fs"
 import path from "path"
 import { DeployPlugin } from 'warp-contracts-plugin-deploy';
-jest.setTimeout(300000)
+jest.setTimeout(3000000)
 describe("Testing the picture.studio contract", () => {
     let wallet: JWKInterface
     let wallet_id: string
@@ -164,6 +164,23 @@ describe("Testing the picture.studio contract", () => {
         expect(data?.errorMessage).toEqual("You don't need to buy this content. It is Free/Open Access")
         const contrac1 = warp.contract(contract_id).connect(wallet1)
         await expect(contrac1.writeInteraction({ function: "buy", type: "video", id: id }, { strict: true, transfer: { target: wallet_id, winstonQty: price_winston } })).rejects.toThrow("Cannot create interaction: \"You don't need to buy this content. It is Free/Open Access\"")
+    })
+    it("testing create_playlist with open model", async () => {
+        await contract.writeInteraction({ function: "create_playlist", title, id, description, tags, thumbnails, access_model: "open" }, { strict: true })
+        const data = (await contract.readState()).cachedValue.state.playlist[0]
+        expect(`${data.title} ${data.description} ${data.thumbnails} ${data.tags} ${data.id} ${data.access_model} ${data.creator} ${data.payment_address} ${data.teaser} ${data.price_winston} ${data.video_list}`)
+            .toEqual(`${title} ${description} ${thumbnails} ${tags} ${id} open ${wallet_id} ${null}  ${null} `)
+    })
+    it("testing create_playlist with exclusive model", async () => {
+        await contract.writeInteraction({ function: "create_playlist", title, id: id1, description, tags, thumbnails, access_model: "exclusive", price_winston }, { strict: true })
+        const data = (await contract.readState()).cachedValue.state.playlist[1]
+        expect(`${data.title} ${data.description} ${data.thumbnails} ${data.tags} ${data.id} ${data.access_model} ${data.creator} ${data.payment_address} ${data.teaser} ${data.price_winston} ${data.video_list}`)
+            .toEqual(`${title} ${description} ${thumbnails} ${tags} ${id1} exclusive ${wallet_id} ${wallet_id}  ${price_winston} `)
+    })
+    it("testing upload_video in playlist open access", async () => {
+        await contract.writeInteraction({ function: "upload_video", title: "A good Cars", description: "marcs", tags: ["marcs", "works"], id: "whitehumaro", playlist: id }, { strict: true })
+        const data = await contract.viewState({ function: "get_playlist", id: id })
+        console.log(data.result)
     })
     afterAll(async () => {
         await arlocal.stop()
