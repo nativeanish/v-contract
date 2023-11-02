@@ -1,7 +1,7 @@
-import { Action, State } from "../types";
+import { Action, State, _s_return } from "../types";
 declare const ContractError: new (arg0: string) => any;
 
-export function upload_teaser(state: State, action: Action) {
+export function upload_teaser(state: State, action: Action): _s_return {
     if (action.input.id?.length && action.input.teaser?.length) {
         //@ts-ignore 
         const user: string = SmartWeave.transaction.owner

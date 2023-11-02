@@ -182,6 +182,33 @@ describe("Testing the picture.studio contract", () => {
         const data = await contract.viewState({ function: "get_playlist", id: id })
         console.log(data.result)
     })
+    it("testing teaser upload", async () => {
+        await expect(contract.writeInteraction({ function: "upload_teaser" }, { strict: true })).rejects.toThrow("Cannot create interaction: \"Basic Fields are Missing\"")
+        await expect(contract.writeInteraction({ function: "upload_teaser", id: id }, { strict: true })).rejects.toThrow("Cannot create interaction: \"Basic Fields are Missing\"")
+        await expect(contract.writeInteraction({ function: "upload_teaser", teaser: "afsdf" }, { strict: true })).rejects.toThrow("Cannot create interaction: \"Basic Fields are Missing\"")
+        await expect(contract.writeInteraction({ function: "upload_teaser", teaser: "afsdf", id: "fasdfsd" }, { strict: true })).rejects.toThrow("Cannot create interaction: \"Playlist not found\"")
+        const contract1 = warp.contract(contract_id).connect(wallet1)
+        await expect(contract1.writeInteraction({ function: "upload_teaser", teaser: "afsdf", id: id }, { strict: true })).rejects.toThrow("Cannot create interaction: \"unauthenticated request\"")
+        await contract.writeInteraction({ function: "upload_teaser", teaser: "nativeanish", id: id }, { strict: true })
+        const data = (await contract.readState()).cachedValue.state.playlist[0]
+        expect(data.teaser).toEqual("nativeanish")
+    })
+    it("testing thumbnails upload", async () => {
+        await expect(contract.writeInteraction({ function: "upload_thumbnail" }, { strict: true })).rejects.toThrow("Cannot create interaction: \"Some basic fields are missing\"")
+        await expect(contract.writeInteraction({ function: "upload_thumbnail", id: id }, { strict: true })).rejects.toThrow("Cannot create interaction: \"Some basic fields are missing\"")
+        await expect(contract.writeInteraction({ function: "upload_thumbnail", type: "video" }, { strict: true })).rejects.toThrow("Cannot create interaction: \"Some basic fields are missing\"")
+        await expect(contract.writeInteraction({ function: "upload_thumbnail", type: "videos", id: id, thumbnails: "afsdfsdf" }, { strict: true })).rejects.toThrow("Cannot create interaction: \"Type should be either Video or playlist\"")
+        await expect(contract.writeInteraction({ function: "upload_thumbnail", type: "video", id: `${id}1`, thumbnails: "aafsd" }, { strict: true })).rejects.toThrow("Cannot create interaction: \"Video not found\"")
+        await expect(contract.writeInteraction({ function: "upload_thumbnail", type: "playlist", id: `${id}1`, thumbnails: "aafsd" }, { strict: true })).rejects.toThrow("Cannot create interaction: \"Playlist not found\"")
+        const contract1 = warp.contract(contract_id).connect(wallet1)
+        await expect(contract1.writeInteraction({ function: "upload_thumbnail", type: "video", id: id, thumbnails: "aafsd" }, { strict: true })).rejects.toThrow("Cannot create interaction: \"unauthenticated request\"")
+        await expect(contract1.writeInteraction({ function: "upload_thumbnail", type: "playlist", id: id, thumbnails: "aafsd" }, { strict: true })).rejects.toThrow("Cannot create interaction: \"unauthenticated request\"")
+        await (contract.writeInteraction({ function: "upload_thumbnail", type: "video", id: id, thumbnails: "aafsd" }, { strict: true }))
+        await (contract.writeInteraction({ function: "upload_thumbnail", type: "playlist", id: id, thumbnails: "aafsd" }, { strict: true }))
+        const data = (await contract.readState()).cachedValue.state
+        expect(data.playlist[0].thumbnails).toEqual("aafsd")
+        expect(data.video[0].thumbnails).toEqual("aafsd")
+    })
     afterAll(async () => {
         await arlocal.stop()
     })
