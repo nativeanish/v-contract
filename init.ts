@@ -1,5 +1,6 @@
 import { get_encryption_key } from "./action/read/get_encryption_key";
 import { get_playlist } from "./action/read/get_playlist";
+import { get_user } from "./action/read/get_user";
 import { get_video } from "./action/read/get_video";
 import { Action, State, _return } from "./action/types";
 import { buy } from "./action/write/buy";
@@ -33,6 +34,8 @@ export function handle(state: State, action: Action): _return {
             return upload_teaser(state, action)
         case "upload_thumbnail":
             return upload_thumbnail(state, action)
+        case "get_user":
+            return get_user(state, action)
         default:
             throw new ContractError(`Undefined Method Called`)
     }

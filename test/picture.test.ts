@@ -4,7 +4,7 @@ import ArLocal from "arlocal"
 import fs from "fs"
 import path from "path"
 import { DeployPlugin } from 'warp-contracts-plugin-deploy';
-jest.setTimeout(3000000)
+jest.setTimeout(300000)
 describe("Testing the picture.studio contract", () => {
     let wallet: JWKInterface
     let wallet_id: string
@@ -177,11 +177,6 @@ describe("Testing the picture.studio contract", () => {
         expect(`${data.title} ${data.description} ${data.thumbnails} ${data.tags} ${data.id} ${data.access_model} ${data.creator} ${data.payment_address} ${data.teaser} ${data.price_winston} ${data.video_list}`)
             .toEqual(`${title} ${description} ${thumbnails} ${tags} ${id1} exclusive ${wallet_id} ${wallet_id}  ${price_winston} `)
     })
-    it("testing upload_video in playlist open access", async () => {
-        await contract.writeInteraction({ function: "upload_video", title: "A good Cars", description: "marcs", tags: ["marcs", "works"], id: "whitehumaro", playlist: id }, { strict: true })
-        const data = await contract.viewState({ function: "get_playlist", id: id })
-        console.log(data.result)
-    })
     it("testing teaser upload", async () => {
         await expect(contract.writeInteraction({ function: "upload_teaser" }, { strict: true })).rejects.toThrow("Cannot create interaction: \"Basic Fields are Missing\"")
         await expect(contract.writeInteraction({ function: "upload_teaser", id: id }, { strict: true })).rejects.toThrow("Cannot create interaction: \"Basic Fields are Missing\"")
@@ -208,6 +203,52 @@ describe("Testing the picture.studio contract", () => {
         const data = (await contract.readState()).cachedValue.state
         expect(data.playlist[0].thumbnails).toEqual("aafsd")
         expect(data.video[0].thumbnails).toEqual("aafsd")
+    })
+    it("testing upload_video in playlist", async () => {
+        await expect(contract.writeInteraction({ function: "upload_video", id: "abcd123", title: "Keyboard", description: "About Keyboard", tags: ["keyboard", "archs"], playlist: `${id}1` }, { strict: true })).rejects.toThrow("Cannot create interaction: \"Playlist doesn't exits\"")
+        const contract1 = warp.contract(contract_id).connect(wallet1)
+        await expect(contract1.writeInteraction({ function: "upload_video", id: "abcd123", title: "Keyboard", description: "About Keyboard", tags: ["keyboard", "archs"], playlist: id }, { strict: true })).rejects.toThrow("Cannot create interaction: \"Unauthenticated request\"")
+        await (contract.writeInteraction({ function: "upload_video", id: "abcd123", title: "Keyboard", description: "About Keyboard", tags: ["keyboard", "archs"], playlist: id }, { strict: true }))
+        await (contract.writeInteraction({ function: "upload_video", id: "efgh456", title: "Keyboard", description: "About Keyboard", tags: ["keyboard", "archs"], playlist: id1 }, { strict: true }))
+        const data = (await contract.readState()).cachedValue.state.playlist
+        expect(data[0].video_list).toEqual(["abcd123"])
+        expect(data[1].video_list).toEqual(["efgh456"])
+    })
+    it("testing get_playlist method", async () => {
+        const data = (await contract.readState()).cachedValue.state.playlist
+        expect((await contract.viewState({ function: "get_playlist", id: id })).result).toEqual({ success: true, data: data[0] })
+        expect((await contract.viewState({ function: "get_playlist", id: id1 })).result).toEqual({ success: true, data: data[1] })
+        expect((await contract.viewState({ function: "get_playlist", id: "fasdffsd" })).result).toEqual({ success: false, data: "No Playlist Found" })
+    })
+    it("testing buy method for playlist", async () => {
+        await expect(contract.writeInteraction({ function: "buy", id: "afd", type: "playlist" }, { strict: true, transfer: { winstonQty: price_winston, target: wallet_id } })).rejects.toThrow("Cannot create interaction: \"Playlist is not present\"")
+        await expect(contract.writeInteraction({ function: "buy", id: id, type: "playlist" }, { strict: true, transfer: { winstonQty: price_winston, target: wallet_id } })).rejects.toThrow("Cannot create interaction: \"You don't need to buy this content. It is Free/Open Access\"")
+        const contract1 = warp.contract(contract_id).connect(wallet1)
+        await expect(contract1.writeInteraction({ function: "buy", id: id1, type: "playlist" }, { strict: true, transfer: { winstonQty: `${price_winston}-3`, target: wallet_id } })).rejects.toThrow("Cannot create interaction: \"Not enough amount send or sent to wrong wallet\"")
+        const wallet3 = await warp.generateWallet()
+        await expect(contract1.writeInteraction({ function: "buy", id: id1, type: "playlist" }, { strict: true, transfer: { winstonQty: price_winston, target: wallet3.address } })).rejects.toThrow("Cannot create interaction: \"Not enough amount send or sent to wrong wallet\"")
+        await (contract1.writeInteraction({ function: "buy", id: id1, type: "playlist" }, { strict: true, transfer: { winstonQty: price_winston, target: wallet_id } }))
+        const user = (await contract.readState()).cachedValue.state.bought
+        expect(user[1]).toEqual({ type: "playlist", id: id1, user: wallet_id1 })
+    })
+    it("testing get_user", async () => {
+        const data = (await contract.viewState({ function: "get_user", id: wallet_id })).result
+        const _db = (await contract.readState()).cachedValue.state.user
+        expect(data).toEqual({ success: true, data: _db[0] })
+        const data1 = (await contract.viewState({ function: "get_user", id: wallet_id1 })).result
+        expect(data1).toEqual({ success: false, data: "No Data Found" })
+    })
+
+    it("testing write_encryption_key and get_encryption_key", async () => {
+        let result = (await contract.viewState({ function: "get_encryption_key" })).result
+        expect(result).toEqual({ success: false, data: "Some Fields are missing" })
+        result = (await contract.viewState({ function: "get_encryption_key", content_id: id })).result
+        expect(result).toEqual({ success: false, data: "You don't have any entries" })
+        await contract.writeInteraction({ function: "write_encryption_key", id: "abcd123", content_id: id1 }, { strict: true })
+        result = (await contract.viewState({ function: "get_encryption_key", content_id: "afdjffs" })).result
+        expect(result).toEqual({ success: false, data: "afdjffs content id is not registered yet from your wallet" })
+        result = (await contract.viewState({ function: "get_encryption_key", content_id: id1 })).result
+        expect(result).toEqual({ success: true, data: "abcd123" })
     })
     afterAll(async () => {
         await arlocal.stop()
