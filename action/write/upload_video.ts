@@ -51,7 +51,7 @@ function upload_in_playlist(state: State, action: Action): _s_return {
                 access_model: null,
                 payment_address: null,
                 price_winston: null,
-                playlist: null
+                playlist: playlist[0].id
             })
             playlist[0].video_list.push(action.input.id)
             return { state: state }
