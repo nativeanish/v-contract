@@ -34,7 +34,7 @@ export interface State {
     playlist: Array<Playlist>
     user: Array<User>
     bought: Array<{ type: "video" | "playlist", id: string, user: string }>
-    encrypted_db: Array<{ id: string, content_id: string, writer: string, iv: string }>
+    encrypted_db: Array<{ id: string, content_id: string, writer: string, iv1: string, iv2: string }>
 }
 type call = "upload_video" | "create_playlist" | "view" | "get_playlist" | "get_video" | "buy" | "write_encryption_key" | "get_encryption_key" | "upload_teaser" | "upload_thumbnail" | "get_user"
 export interface Action {
@@ -51,9 +51,10 @@ export interface Action {
         teaser: string;
         type: "video" | "playlist";
         content_id: string;
-        iv: string;
+        iv1: string;
+        iv2: string
     }
 }
 export type _s_return = { state: State }
-export type _q_return = { result: { success: boolean; data: Video | Playlist | string | User | { id: string, content_id: string, writer: string, iv: string } } }
+export type _q_return = { result: { success: boolean; data: Video | Playlist | string | User | { id: string, content_id: string, writer: string, iv1: string, iv2: string } } }
 export type _return = _s_return | _q_return

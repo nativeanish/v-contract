@@ -1,5 +1,10 @@
 node_modules
 dist
+cache
 **logs
 **deploy.ts
 **wallet.json
+**check_state.ts
+**indes.ts
+**irys.ts
+**yarn-error.log
