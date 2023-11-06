@@ -16,7 +16,7 @@ export function get_encryption_key(state: State, action: Action): _q_return {
         if (encrypted_db?.length) {
             const key = encrypted_db.find((e) => e.content_id === action.input.content_id)
             if (key?.id?.length) {
-                return { result: { success: true, data: String(key.id) } }
+                return { result: { success: true, data: key } }
             } else {
                 return { result: { success: false, data: `${action.input.content_id} content id is not registered yet from your wallet` } }
             }

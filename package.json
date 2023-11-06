@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "@irys/sdk": "^0.0.4",
     "@types/jest": "^29.5.7",
     "@types/node": "^20.8.10",
     "arlocal": "^1.1.62",
